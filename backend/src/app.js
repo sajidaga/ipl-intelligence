@@ -4,6 +4,7 @@ const authRoutes = require('./routes/auth.routes');
 const playerRoutes = require('./routes/player.routes');
 const matchRoutes = require('./routes/match.routes');
 const teamRoutes = require('./routes/team.routes');
+const analyticsRoutes = require('./routes/analytics.routes');
 const { errorHandler } = require('./middleware/error.middleware');
 
 const app = express();
@@ -17,6 +18,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/players', playerRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/teams', teamRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

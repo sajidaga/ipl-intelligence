@@ -12,7 +12,7 @@ const getAllTeams = async (req, res, next) => {
 const getTeamById = async (req, res, next) => {
   try {
     const team = await prisma.team.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id: req.params.id },
     });
     if (!team) return res.status(404).json({ message: 'Team not found' });
     res.json(team);
@@ -24,7 +24,7 @@ const getTeamById = async (req, res, next) => {
 const getTeamPlayers = async (req, res, next) => {
   try {
     const players = await prisma.player.findMany({
-      where: { teamId: parseInt(req.params.id) },
+      where: { teamId: req.params.id },
     });
     res.json(players);
   } catch (error) {

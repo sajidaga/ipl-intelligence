@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const matchController = require('../controllers/match.controller');
+const { authMiddleware } = require('../middleware/auth.middleware');
 
-router.get('/', matchController.getAllMatches);
-router.get('/upcoming', matchController.getUpcomingMatches);
-router.get('/:id', matchController.getMatchById);
+router.get('/', authMiddleware, matchController.getAllMatches);
+router.get('/:id', authMiddleware, matchController.getMatchById);
 
 module.exports = router;

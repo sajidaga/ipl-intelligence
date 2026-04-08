@@ -14,7 +14,7 @@ const getAllMatches = async (req, res, next) => {
 const getMatchById = async (req, res, next) => {
   try {
     const match = await prisma.match.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id: req.params.id },
     });
     if (!match) return res.status(404).json({ message: 'Match not found' });
     res.json(match);
@@ -23,16 +23,4 @@ const getMatchById = async (req, res, next) => {
   }
 };
 
-const getUpcomingMatches = async (req, res, next) => {
-  try {
-    const matches = await prisma.match.findMany({
-      where: { date: { gte: new Date() } },
-      orderBy: { date: 'asc' },
-    });
-    res.json(matches);
-  } catch (error) {
-    next(error);
-  }
-};
-
-module.exports = { getAllMatches, getMatchById, getUpcomingMatches };
+module.exports = { getAllMatches, getMatchById };

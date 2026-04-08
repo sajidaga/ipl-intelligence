@@ -12,7 +12,7 @@ const getAllPlayers = async (req, res, next) => {
 const getPlayerById = async (req, res, next) => {
   try {
     const player = await prisma.player.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id: req.params.id },
     });
     if (!player) return res.status(404).json({ message: 'Player not found' });
     res.json(player);
@@ -24,7 +24,7 @@ const getPlayerById = async (req, res, next) => {
 const getPlayerStats = async (req, res, next) => {
   try {
     const stats = await prisma.playerStats.findMany({
-      where: { playerId: parseInt(req.params.id) },
+      where: { playerId: req.params.id },
     });
     res.json(stats);
   } catch (error) {

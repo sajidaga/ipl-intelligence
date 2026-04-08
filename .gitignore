@@ -85,3 +85,9 @@ coverage.xml
 *.pid.lock
 .ruff_cache/
 .mypy_cache/
+
+# =====================
+# Data
+# =====================
+backend/prisma/data/
+*.csv
