@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  shortName String
+  logo      String?
+  players   Player[]
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Player {
+  id        Int           @id @default(autoincrement())
+  name      String
+  role      String
+  battingStyle String?
+  bowlingStyle String?
+  team      Team?         @relation(fields: [teamId], references: [id])
+  teamId    Int?
+  stats     PlayerStats[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model PlayerStats {
+  id          Int    @id @default(autoincrement())
+  season      Int
+  matches     Int    @default(0)
+  runs        Int    @default(0)
+  wickets     Int    @default(0)
+  catches     Int    @default(0)
+  strikeRate  Float  @default(0)
+  average     Float  @default(0)
+  player      Player @relation(fields: [playerId], references: [id])
+  playerId    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Match {
+  id         Int      @id @default(autoincrement())
+  date       DateTime
+  venue      String
+  homeTeam   Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  homeTeamId Int
+  awayTeam   Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  awayTeamId Int
+  result     String?
+  winnerId   Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
