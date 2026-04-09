@@ -4,7 +4,7 @@ Loads pre-trained models from saved_models/ and runs inference.
 """
 
 import os
-import pickle
+import joblib
 import numpy as np
 
 from schemas.prediction import (
@@ -12,6 +12,8 @@ from schemas.prediction import (
     MatchPredictionResponse,
     PlayerScoreRequest,
     PlayerScoreResponse,
+    TopScorerRequest,
+    TopScorerResponse,
 )
 
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "saved_models")
@@ -30,7 +32,7 @@ def _load_model(model_name: str):
                 "Run 'python -m ml.train' first to train the models."
             )
         with open(model_path, "rb") as f:
-            _models[model_name] = pickle.load(f)
+            _models[model_name] = joblib.load(f)
     return _models[model_name]
 
 
@@ -55,7 +57,9 @@ def predict_match_winner(request: MatchPredictionRequest) -> MatchPredictionResp
     probabilities = model.predict_proba(features)[0]
     win_prob = float(max(probabilities))
 
-    predicted_winner_id = request.home_team_id if prediction == 1 else request.away_team_id
+    predicted_winner_id = (
+        request.home_team_id if prediction == 1 else request.away_team_id
+    )
 
     factors = []
     if probabilities[1] > 0.6:
@@ -92,4 +96,24 @@ def predict_player_score(request: PlayerScoreRequest) -> PlayerScoreResponse:
         predicted_strike_rate=round(predicted_runs * 1.2 + 50, 2),
         confidence="medium",
         factors=factors,
+    )
+
+
+def predict_top_scorer(request: TopScorerRequest) -> TopScorerResponse:
+    """Predict the highest scoring batsman for a given match or team."""
+
+    # 1. Load the specific model we want to use
+    model = _load_model("top_scorer")
+
+    # 2. TODO: Replace with real database feature extraction
+    features = np.array([[0.8, 0.4]])
+
+    # 3. Predict the runs (force it to be an integer above 0)
+    predicted_runs = int(max(0, model.predict(features)[0]))
+
+    # 4. Return our exact Pydantic format!
+    return TopScorerResponse(
+        player_id="dummy_cuid_for_virat_kohli",  # Placeholder ID
+        predicted_runs=predicted_runs,
+        confidence="high",
     )

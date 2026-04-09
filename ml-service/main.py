@@ -28,7 +28,7 @@ async def health_check():
     return {"status": "ok", "service": "ml-service"}
 
 
-app.include_router(predictions_router, prefix="/predictions", tags=["predictions"])
+app.include_router(predictions_router, prefix="/predict", tags=["predictions"])
 
 if __name__ == "__main__":
     import uvicorn
